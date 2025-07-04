@@ -1,5 +1,10 @@
 {
-  "classes": [],
+  "classes": [
+    {
+      "id": "ece2",
+      "name": "teste"
+    }
+  ],
   "students": [],
   "observations": []
 }

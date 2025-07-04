@@ -8,6 +8,7 @@
       "@redux/*": ["./src/redux/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@styles/*": ["./src/styles/*"],
+      "@services/*": ["./src/services/*"],
     }
   }
 }

@@ -1,11 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
-
-const placeholderReducer = (state = {}, action: {type: string, payload: string}) => {
-  return state;
-};
+import classesReducer from './classesSlice';
 
 const rootReducer = combineReducers({
-  placeholder: placeholderReducer,
-});
+  classes: classesReducer,
+})
 
-export default rootReducer;
+export default rootReducer
