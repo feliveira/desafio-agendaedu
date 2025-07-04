@@ -57,7 +57,7 @@ export default function ClassesScreen() {
         <FlatList
             data={classes}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ClassItem name={item.name} />}
+            renderItem={({ item }) => <ClassItem id={item.id} name={item.name} />}
             className="px-4 mt-4"
         /> 
         ) : (

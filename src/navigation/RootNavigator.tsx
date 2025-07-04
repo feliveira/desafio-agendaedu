@@ -2,6 +2,7 @@ import React from "react";
 import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import HomeScreen from "@screens/HomeScreen"; 
 import ClassesScreen from "@screens/ClassesScreen";
+import StudentsScreen from "@screens/StudentsScreens";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ export default function RootNavigator() {
         name="classes"
         component={ClassesScreen}
         options={{ title: "Turmas", ...headerStyles }}
+      />
+      <Stack.Screen
+        name="students"
+        component={StudentsScreen}
+        options={{ title: "Alunos", ...headerStyles }}
       />
     </Stack.Navigator>
   )
