@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest"
+    "test": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.4.0",

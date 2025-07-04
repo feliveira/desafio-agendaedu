@@ -37,7 +37,7 @@ jobs:
       # O '--' é usado para passar o argumento '--coverage' diretamente para o comando 'jest'
       # O Jest irá gerar uma pasta 'coverage' com os resultados
       - name: Run tests with coverage
-        run: npm test -- --coverage --passWithNoTests
+        run: npm test
 
       # 5. Publicar o relatório de cobertura no Pull Request
       # Esta Action utiliza o sumário de cobertura gerado pelo Jest
@@ -48,3 +48,4 @@ jobs:
           # Este token é gerado automaticamente pelo GitHub.
           # É necessário para que a Action possa postar um comentário no PR.
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-file: ./coverage/coverage-final.json
