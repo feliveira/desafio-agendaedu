@@ -97,7 +97,13 @@ const config: Config = {
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    "^@components/(.*)$": "<rootDir>/src/components/$1",
+    "^@screens/(.*)$": "<rootDir>/src/screens/$1",
+    "^@redux/(.*)$": "<rootDir>/src/redux/$1",
+    "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
+    "^@styles/(.*)$": "<rootDir>/src/styles/$1",
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -136,10 +142,9 @@ const config: Config = {
   // transform: undefined,
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "\\\\node_modules\\\\",
-  //   "\\.pnp\\.[^\\\\]+$"
-  // ],
+  transformIgnorePatterns: [
+    "node_modules/(?!((jest-)?react-native|@react-native|@react-navigation|@expo|expo(nent)?|expo-router|nativewind|react-native-css-interop)/)"
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
