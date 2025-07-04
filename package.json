@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --coverage --passWithNoTests --coverageReporters=json --outputFile=./coverage/coverage-final.json"
+    "test": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.4.0",
@@ -32,6 +32,7 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@testing-library/react-native": "^13.2.0",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
     "babel-jest": "^30.0.4",
     "jest": "~29.7.0",

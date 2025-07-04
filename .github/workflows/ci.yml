@@ -37,35 +37,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4. Verifica se há testes válidos
-      # Se houver prossegue para o próximo passo, caso não haja, não executa o processo de testes
-      - name: Check for existence of test files
-        id: check_tests
-        run: |
-          if find . -name "*.test.js" -o -name "*.spec.js" -o -name "__tests__" -print -quit | grep -q .; then
-            echo "tests_found=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "tests_found=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      # 5. Rodar os testes com cobertura
+      # 4. Rodar os testes com cobertura
       # O '--' é usado para passar o argumento '--coverage' diretamente para o comando 'jest'
       # O Jest irá gerar uma pasta 'coverage' com os resultados
-      - name: Run Jest tests with coverage (if tests found)
-        if: steps.check_tests.outputs.tests_found == 'true'
+      - name: Run Jest tests with coverage
         run: npm test
 
-      # 6. Publicar o relatório de cobertura no Pull Request
+      # 5. Publicar o relatório de cobertura no Pull Request
       # Esta Action utiliza o sumário de cobertura gerado pelo Jest
       # para criar um comentário amigável no PR.
-      - name: Generate Jest coverage report comment (if tests found)
-        if: steps.check_tests.outputs.tests_found == 'true'
+      - name: Generate Jest coverage report comment
         uses: artiomtr/jest-coverage-report-action@v2
         with:
           # Este token é gerado automaticamente pelo GitHub.
           # É necessário para que a Action possa postar um comentário no PR.
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-file: ./coverage/coverage-final.json
-          pass-threshold: 0
-          fail-threshold: 0
-          hide-comment: 'empty_coverage'
