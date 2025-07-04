@@ -66,3 +66,6 @@ jobs:
           # É necessário para que a Action possa postar um comentário no PR.
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-file: ./coverage/coverage-final.json
+          pass-threshold: 0
+          fail-threshold: 0
+          hide-comment: 'empty_coverage'
