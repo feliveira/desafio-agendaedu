@@ -83,7 +83,7 @@ export default function ClassesScreen() {
         setPage(1)
       }
     }
-
+    
     fetchInitial()
 }, [])
 
@@ -107,8 +107,8 @@ export default function ClassesScreen() {
     const result = await dispatch(fetchClasses({page: nextPage, limit: CLASS_PER_PAGE_LIMIT }))
     if (fetchClasses.fulfilled.match(result)) {
       setPage(nextPage)
-      const { hasMore: more } = result.payload
-      setHasMore(more)
+      const { hasMore } = result.payload 
+      setHasMore(hasMore)
     }
 
     setIsFetchingMore(false)

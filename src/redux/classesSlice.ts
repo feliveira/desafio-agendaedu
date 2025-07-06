@@ -23,16 +23,13 @@ const initialState: ClassesState = {
 }
 
 export const fetchClasses = createAsyncThunk('classes/fetchClasses', async ({ page, limit }: {page: number, limit: number}) => {
-  const response = await fetch(`${BASE_URL}/classes?_page=${page}&_limit=${limit}`)
+  const response = await fetch(`${BASE_URL}/classes?_page=${page}&_per_page=${limit}`)
   if (!response.ok) {
-    throw new Error('Failed to fetch classes')
+      throw new Error(`Failed to fetch classes: ${response.statusText}`);
   }
   const data = await response.json()
-console.log(`Page ${page}`,data)
-  const hasMore = data.length === limit
-
-  return { classes: data, hasMore };
-
+  const hasMore = page != data.last
+  return { classes: data.data, hasMore }
 })
 
 export const createClass = createAsyncThunk(
