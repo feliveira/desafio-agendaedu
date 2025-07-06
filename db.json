@@ -1,10 +1,77 @@
 {
   "classes": [
     {
-      "id": "ece2",
-      "name": "teste"
+      "id": "0dab",
+      "name": "teste1"
+    },
+    {
+      "id": "bc9a",
+      "name": "teste2"
+    },
+    {
+      "id": "cc9a",
+      "name": "teste3"
+    },
+    {
+      "id": "149e",
+      "name": "teste4"
+    },
+    {
+      "id": "6297",
+      "name": "teste5"
+    },
+    {
+      "id": "2612",
+      "name": "teste6"
+    },
+    {
+      "id": "3f20",
+      "name": "teste7"
+    },
+    {
+      "id": "716d",
+      "name": "teste8"
+    },
+    {
+      "id": "caff",
+      "name": "teste9"
+    },
+    {
+      "id": "b9d1",
+      "name": "teste10"
+    },
+    {
+      "id": "f3f3",
+      "name": "teste11"
+    },
+    {
+      "id": "7751",
+      "name": "teste12"
     }
   ],
-  "students": [],
-  "observations": []
+  "students": [
+    {
+      "id": "eb69",
+      "name": "felipe teste1",
+      "classId": "0dab"
+    },
+    {
+      "id": "198d",
+      "name": "john teste1",
+      "classId": "0dab"
+    }
+  ],
+  "observations": [
+    {
+      "id": "7796",
+      "classId": "0dab",
+      "className": "teste1",
+      "text": "felipetest125211",
+      "studentId": "eb69",
+      "studentName": "felipe teste1",
+      "favorite": true,
+      "done": true,
+      "createdAt": "2025-07-06T23:38:41.760Z"
+    }
+  ]
 }

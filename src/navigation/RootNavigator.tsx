@@ -1,8 +1,8 @@
-import React from "react";
 import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import HomeScreen from "@screens/HomeScreen"; 
 import ClassesScreen from "@screens/ClassesScreen";
-import StudentsScreen from "@screens/StudentsScreens";
+import StudentsListScreen from "@screens/StudentsListScreen";
+import StudentObservationsScreen from "@screens/StudentObservationsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,8 +35,13 @@ export default function RootNavigator() {
       />
       <Stack.Screen
         name="students"
-        component={StudentsScreen}
+        component={StudentsListScreen}
         options={{ title: "Alunos", ...headerStyles }}
+      />
+      <Stack.Screen
+        name="student"
+        component={StudentObservationsScreen}
+        options={{ title: "Aluno", ...headerStyles }}
       />
     </Stack.Navigator>
   )
