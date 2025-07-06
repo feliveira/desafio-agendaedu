@@ -54,14 +54,24 @@
       "id": "eb69",
       "name": "felipe teste1",
       "classId": "0dab"
+    },
+    {
+      "id": "198d",
+      "name": "john teste1",
+      "classId": "0dab"
     }
   ],
   "observations": [
     {
-      "text": "teste observaçao",
+      "id": "7796",
+      "classId": "0dab",
+      "className": "teste1",
+      "text": "felipetest125211",
+      "studentId": "eb69",
+      "studentName": "felipe teste1",
       "favorite": true,
-      "done": false,
-      "id": "2e56"
+      "done": true,
+      "createdAt": "2025-07-06T23:38:41.760Z"
     }
   ]
 }

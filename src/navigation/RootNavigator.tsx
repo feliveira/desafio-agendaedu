@@ -1,4 +1,3 @@
-import React from "react";
 import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import HomeScreen from "@screens/HomeScreen"; 
 import ClassesScreen from "@screens/ClassesScreen";

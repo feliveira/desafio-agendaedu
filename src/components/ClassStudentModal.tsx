@@ -49,6 +49,7 @@ export default function ClassStudentModal({
               <Text className="text-xl font-bold text-[#31223E] mb-2">{title}</Text>
               <TextInput
                 className="border border-[#773DD3] rounded-lg p-4 text-lg mb-6 font-regular"
+                selectionColor="#773DD3"
                 placeholder={`Digite ${title.toLowerCase()}`}
                 value={inputValue}
                 onChangeText={setInputValue}

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { Pen, Star } from "lucide-react-native";
 
@@ -38,7 +37,7 @@ export default function ObservationItem({
     <View className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm relative mb-4">
       <View className="flex-row justify-between items-start mb-2">
         <View className="flex-row items-center flex-wrap flex-1">
-          <TouchableOpacity onPress={onPressStudent != null ? onPressStudent : () => {}} activeOpacity={0.7}>
+          <TouchableOpacity onPress={onPressStudent != null ? onPressStudent : () => {}} activeOpacity={0.8}>
             <Text style={{color: onPressStudent != null ? "#773DD3" : "#31223E" }} className="font-bold text-base">
               {studentName}
             </Text>
@@ -46,45 +45,46 @@ export default function ObservationItem({
 
           <Text className="text-gray-500 mx-2">|</Text>
 
-          <TouchableOpacity onPress={onPressClass != null ? onPressClass : () => {}} activeOpacity={0.7}>
+          <TouchableOpacity onPress={onPressClass != null ? onPressClass : () => {}} activeOpacity={0.8} className="mr-2">
             <Text  style={{color: onPressClass != null ? "#773DD3" : "#31223E" }} className="font-bold text-base">
               {className}
             </Text>
           </TouchableOpacity>
 
-            <Star
-              size={20}
-              color={favorite ? "#FFC700" : "#A0A0A0"}
-              fill={favorite ? "#FFC700" : "transparent"}
-            />
+          <Star
+            size={20}
+            color={favorite ? "#FFC700" : "#A0A0A0"}
+            fill={favorite ? "#FFC700" : "transparent"}
+          />
         </View>
 
-        <Text className="text-gray-500 text-sm ml-2">{formattedDate}</Text>
+        <Text className="text-gray-500 font-regular text-sm ml-2">{formattedDate}</Text>
       </View>
 
       <View>
-        <Text className="text-[#31223E] text-base leading-6">{text}</Text>
+        <Text className="text-[#31223E] font-regular text-base leading-6">{text}</Text>
       </View>
 
-      {
-        done &&
-        <View
-        className="absolute -bottom-3 -left-3 bg-[#588157] px-3 py-1 rounded shadow-lg"
-      >
-        <Text className="text-white">DONE</Text>
+      <View className="flex-row items-center justify-between mt-4">
+        {
+          done &&
+          <View
+          className="bg-[#588157] px-3 h-8 rounded shadow-lg items-center justify-center"
+        >
+          <Text className="text-white text-xs font-regular">DONE</Text>
+        </View>
+        }
+        {
+          onPressEdit != null &&
+          <TouchableOpacity
+          onPress={() => onPressEdit(id)}
+          activeOpacity={0.8}
+          className="bg-[#773DD3] w-8 h-8 rounded shadow-lg items-center justify-center"
+        >
+          <Pen size={10} color="#FFFFFF" />
+        </TouchableOpacity>
+        }
       </View>
-      }
-
-      {
-        onPressEdit != null &&
-        <TouchableOpacity
-        onPress={() => onPressEdit(id)}
-        activeOpacity={0.8}
-        className="absolute -bottom-3 -right-3 bg-[#773DD3] p-3 rounded-full shadow-lg"
-      >
-        <Pen size={20} color="#FFFFFF" />
-      </TouchableOpacity>
-      }
     </View>
   )
 }

@@ -75,8 +75,8 @@ export default function ObservationModal({
         <View className="flex-1 bg-black/50 justify-end z-[1000]">
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
             <View className="bg-white rounded-t-3xl p-6 w-full shadow-lg">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-xl font-bold text-[#31223E] mb-2">
+              <View className="flex-row items-center justify-between mb-2">
+                <Text className="text-xl font-bold text-[#31223E]">
                   Observação
                 </Text>
                 <TouchableOpacity
@@ -87,12 +87,14 @@ export default function ObservationModal({
                 </TouchableOpacity>
               </View>
               <TextInput
-                className="border border-[#773DD3] rounded-lg p-4 text-lg mb-6 font-regular"
+                className="border border-[#773DD3] caret-[#773DD3] rounded-lg p-4 text-lg mb-6 font-regular"
                 placeholder="Digite a sua observação"
                 value={inputValue}
                 onChangeText={setInputValue}
                 multiline
                 numberOfLines={4}
+                selectionColor="#773DD3"
+                style={{ textAlignVertical: 'top' }}
                 editable={!loading}
               />
 

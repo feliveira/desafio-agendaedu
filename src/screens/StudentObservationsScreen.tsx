@@ -198,12 +198,19 @@ export default function StudentObservationsScreen() {
       })
       return
     }
+
+    const observation = observations.find(obs => obs.id === selectedObservation!.id)
     const resultAction = await dispatch(
       editObservation({
         id: selectedObservation!.id,
         text: text,
+        classId: classId,
+        className: className,
+        studentId: studentId,
+        studentName: studentName,
         favorite: favorite,
         done: done,
+        createdAt: observation!.createdAt
       })
     )
     if (editObservation.fulfilled.match(resultAction)) {
