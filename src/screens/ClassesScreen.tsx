@@ -19,13 +19,14 @@ import {
   deleteClass,
 } from "@redux/classesSlice";
 
-import ClassItem from "@components/ClassItem";
+import ClassItem from "@components/ListItem";
 import GenericModal from "@components/GenericModal";
 
 import Toast from "react-native-toast-message";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ConfirmDeleteModal from "@components/ConfirmDeleteModal";
+import { useNavigation } from "@hooks/useNavigation";
 
 type ModalAction = "create" | "edit"
 
@@ -37,6 +38,7 @@ type ClassModalState = {
 }
 
 export default function ClassesScreen() {
+  const { navigate } = useNavigation()
   const dispatch: AppDispatch = useDispatch()
   const { classes, status, error } = useSelector(
     (state: RootState) => state.classes
@@ -256,6 +258,7 @@ export default function ClassesScreen() {
               name={item.name}
               onEdit={openEditModal}
               onDelete={openDeleteModal}
+              onPress={() => navigate("students", { classId: item.id, name: item.name })}
             />
           )}
           ListFooterComponent={() =>
@@ -264,7 +267,7 @@ export default function ClassesScreen() {
                 <TouchableOpacity
                   onPress={loadMoreClasses}
                   disabled={isFetchingMore}
-                  className="bg-[#E8DDFF] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
+                  className="bg-[#E8DDFF] rounded-lg w-full items-center justify-center py-4 max-w-[299px]"
                 >
                   {isFetchingMore ? (
                     <ActivityIndicator color="#773DD3" size={24} />
@@ -289,7 +292,7 @@ export default function ClassesScreen() {
       <View className="mt-auto p-4 items-center">
         <TouchableOpacity
           activeOpacity={0.8}
-          className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
+          className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-4 max-w-[299px]"
           onPress={toggleClassModalVisibility}
           disabled={status === "loading"}
         >

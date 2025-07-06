@@ -25,7 +25,7 @@ const initialState: ClassesState = {
 export const fetchClasses = createAsyncThunk('classes/fetchClasses', async ({ page, limit }: {page: number, limit: number}) => {
   const response = await fetch(`${BASE_URL}/classes?_page=${page}&_per_page=${limit}`)
   if (!response.ok) {
-      throw new Error(`Failed to fetch classes: ${response.statusText}`);
+      throw new Error(`Failed to fetch classes: ${response.statusText}`)
   }
   const data = await response.json()
   const hasMore = page != data.last
@@ -52,7 +52,6 @@ export const createClass = createAsyncThunk(
       const newClass = await response.json()
       return newClass
     } catch (error: any) {
-      console.error("Error creating class:", error)
       return rejectWithValue(error.message || 'An unknown error occurred during class creation')
     }
   }
@@ -83,7 +82,6 @@ export const editClass = createAsyncThunk(
       const updatedClass = await response.json()
       return updatedClass
     } catch (error: any) {
-      console.error("Error editing class:", error)
       return rejectWithValue(error.message || 'An unknown error occurred during class edit')
     }
   }
@@ -105,7 +103,6 @@ export const deleteClass = createAsyncThunk(
 
       return id 
     } catch (error: any) {
-      console.error("Error deleting class:", error)
       return rejectWithValue(error.message || 'An unknown error occurred during class deletion')
     }
   }
@@ -124,16 +121,16 @@ const classesSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(fetchClasses.fulfilled, (state, action) => {
-        const page = action.meta.arg.page;
+        const page = action.meta.arg.page
 
         if (page === 1) {
-          state.classes = action.payload.classes;
+          state.classes = action.payload.classes
         } else {
-          state.classes = [...state.classes, ...action.payload.classes];
+          state.classes = [...state.classes, ...action.payload.classes]
         }
 
-        state.hasMore = action.payload.hasMore;
-        state.status = 'succeeded';
+        state.hasMore = action.payload.hasMore
+        state.status = 'succeeded'
       })
       .addCase(fetchClasses.rejected, (state, action) => {
         state.status = 'failed'

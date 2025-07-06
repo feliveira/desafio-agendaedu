@@ -6,86 +6,228 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Modal,
-  TextInput,
-  TouchableWithoutFeedback,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@redux/store";
 import {
   fetchStudents,
   createStudent,
+  editStudent,
+  deleteStudent,
 } from "@redux/studentsSlice";
-import StudentItem from "@components/StudentItem";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RoutesParamList } from "../types/navigation";
+import Toast from "react-native-toast-message";
+import GenericModal from "@components/GenericModal";
+import ConfirmDeleteModal from "@components/ConfirmDeleteModal";
+import ListItem from "@components/ListItem";
+import { useNavigation } from "@hooks/useNavigation";
 
-type StudentsScreenRouteProp = RouteProp<RoutesParamList, "students">
+type StudentsScreenRouteProp = RouteProp<RoutesParamList, "students">;
+
+const STUDENTS_PER_PAGE_LIMIT = 5;
+
+type ModalAction = "create" | "edit";
+
+type StudentModalState = {
+  visible: boolean;
+  action: ModalAction;
+};
 
 export default function StudentsScreen() {
-  const route = useRoute<StudentsScreenRouteProp>()
-  const { classId, name: className } = route.params
+  const route = useRoute<StudentsScreenRouteProp>();
+  const { classId, name: className } = route.params;
 
-  const dispatch: AppDispatch = useDispatch()
+  const { navigate } = useNavigation();
+
+  const dispatch: AppDispatch = useDispatch();
   const { students, status, error } = useSelector(
     (state: RootState) => state.students
-  )
+  );
 
-  const [isCreateStudentVisible, setIsCreateStudentVisible] = useState(false)
-  const [studentNameInput, setStudentNameInput] = useState("")
+  const [studentModal, setStudentModal] = useState<StudentModalState>({
+    visible: false,
+    action: "create",
+  });
+
+  const [studentNameInput, setStudentNameInput] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
+    null
+  );
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchStudents())
-    }
-  }, [status, dispatch])
+    const fetchInitial = async () => {
+      const result = await dispatch(
+        fetchStudents({ page: 1, limit: STUDENTS_PER_PAGE_LIMIT, classId })
+      );
+      if (fetchStudents.fulfilled.match(result)) {
+        setHasMore(result.payload.hasMore);
+        setPage(1);
+      }
+    };
+
+    fetchInitial();
+  }, []);
 
   useEffect(() => {
     if (status === "failed" && error) {
-      Alert.alert("Error", error)
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2: "Ocorreu um erro, por favor, tente novamente mais tarde.",
+        visibilityTime: 1000,
+      });
     }
-  }, [status, error])
+  }, [status, error]);
 
-  const toggleIsCreateStudentVisible = () => {
-    setIsCreateStudentVisible(!isCreateStudentVisible)
-  }
+  const loadMoreStudents = async () => {
+    if (isFetchingMore || !hasMore) return;
 
-  const handleCreateStudent = async () => {
-    if (studentNameInput.trim() === "") {
-      Alert.alert("Erro", "O nome do aluno não pode estar vazio.")
-      return
+    setIsFetchingMore(true);
+    const nextPage = page + 1;
+
+    const result = await dispatch(
+      fetchStudents({ page: nextPage, limit: STUDENTS_PER_PAGE_LIMIT, classId })
+    );
+    if (fetchStudents.fulfilled.match(result)) {
+      setPage(nextPage);
+      const { hasMore } = result.payload;
+      setHasMore(hasMore);
+    }
+
+    setIsFetchingMore(false);
+  };
+
+  const toggleStudentModalVisibility = () => {
+    setStudentModal((state) => ({
+      ...state,
+      action: "create",
+      visible: !state.visible,
+    }));
+  };
+
+  const handleCreateStudent = async (studentName: string) => {
+    if (studentName.trim() === "") {
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2: "O nome do(a) aluno(a) não pode estar vazio.",
+        visibilityTime: 1000,
+      });
+      return;
     }
 
     const resultAction = await dispatch(
-      createStudent({ name: studentNameInput, classId: classId })
-    )
+      createStudent({ classId: classId, name: studentName })
+    );
 
     if (createStudent.fulfilled.match(resultAction)) {
-      setStudentNameInput("")
-      toggleIsCreateStudentVisible()
+      setStudentNameInput("");
+      toggleStudentModalVisibility();
+      Toast.show({
+        type: "customSuccess",
+        text1: "✅ Sucesso",
+        text2: "A turma foi criada com sucesso!",
+        visibilityTime: 400,
+      });
     } else if (createStudent.rejected.match(resultAction)) {
-      Alert.alert(
-        "Erro",
-        (resultAction.payload as string) || "Não foi possível criar o aluno."
-      )
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2:
+          "Ocorreu um erro ao criar o(a) aluno(a). Por favor, tente novamente mais tarde.",
+        visibilityTime: 1000,
+      });
     }
-  }
+  };
 
-  const studentsInCurrentClass = students.filter(
-    (student) => student.classId === classId
-  )
+  const handleEditStudent = async (studentName: string) => {
+    if (studentName.trim() === "") {
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2: "O nome do(a) aluno(a) não pode estar vazio.",
+        visibilityTime: 1000,
+      });
+      return;
+    }
+
+    const resultAction = await dispatch(
+      editStudent({ id: classId, newName: studentName })
+    );
+
+    if (editStudent.fulfilled.match(resultAction)) {
+      setStudentNameInput("");
+      toggleStudentModalVisibility();
+      Toast.show({
+        type: "customSuccess",
+        text1: "✅ Sucesso",
+        text2: "O(A) aluno(a) foi editado(a) com sucesso!",
+        visibilityTime: 400,
+      });
+    } else if (editStudent.rejected.match(resultAction)) {
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2:
+          "Ocorreu um erro ao editar o(a) aluno(a). Por favor, tente novamente mais tarde.",
+        visibilityTime: 1000,
+      });
+    }
+  };
+
+  const handleStudentDelete = async () => {
+    const resultAction = await dispatch(deleteStudent(selectedStudentId!));
+
+    if (deleteStudent.fulfilled.match(resultAction)) {
+      setStudentNameInput("");
+      setSelectedStudentId(null);
+      setIsDeleteModalVisible(false);
+
+      Toast.show({
+        type: "customSuccess",
+        text1: "✅ Sucesso",
+        text2: "O(a) aluno(a) foi deletado(a) com sucesso!",
+        visibilityTime: 400,
+      });
+    } else if (deleteStudent.rejected.match(resultAction)) {
+      Toast.show({
+        type: "customError",
+        text1: "❌ Erro",
+        text2:
+          "Ocorreu um erro ao deletar o(a) aluno(a). Por favor, tente novamente mais tarde.",
+        visibilityTime: 1000,
+      });
+    }
+  };
+
+  const openEditModal = (classId: string) => {
+    setSelectedStudentId(classId);
+    setStudentNameInput(
+      students.find((student) => student.id === selectedStudentId)!.name
+    );
+    setStudentModal((state) => ({ ...state, visible: true, action: "edit" }));
+  };
+
+  const openDeleteModal = (classId: string) => {
+    setSelectedStudentId(classId);
+    setIsDeleteModalVisible(true);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <StatusBar
-        backgroundColor={isCreateStudentVisible ? "#00000080" : "#F9FAFB"}
+        backgroundColor={studentModal.visible ? "#00000080" : "#F9FAFB"}
         barStyle="dark-content"
       />
-      <View
-        className="w-full bg-[#E8DDFF] py-3.5 px-4"
-      >
+      <View className="w-full bg-[#E8DDFF] py-3.5 px-4">
         <Text className="font-semibold text-[#773DD3] text-2xl text-center">
           turma: {className}
         </Text>
@@ -98,14 +240,46 @@ export default function StudentsScreen() {
             Carregando alunos...
           </Text>
         </View>
-      ) : studentsInCurrentClass.length > 0 ? (
+      ) : students.length > 0 ? (
         <FlatList
-          data={studentsInCurrentClass}
+          data={students}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <StudentItem id={item.id} name={item.name} classId={item.classId} />
-          )}
           className="px-4 mt-4"
+          renderItem={({ item }) => (
+            <ListItem
+              id={item.id}
+              name={item.name}
+              onDelete={openDeleteModal}
+              onEdit={openEditModal}
+              onPress={() =>
+                navigate("student", {
+                  id: item.id,
+                  classId: classId,
+                  className: className,
+                  name: item.name,
+                })
+              }
+            />
+          )}
+          ListFooterComponent={() =>
+            hasMore ? (
+              <View className="py-6 items-center">
+                <TouchableOpacity
+                  onPress={loadMoreStudents}
+                  disabled={isFetchingMore}
+                  className="bg-[#E8DDFF] rounded-lg w-full items-center justify-center py-4 max-w-[299px]"
+                >
+                  {isFetchingMore ? (
+                    <ActivityIndicator color="#773DD3" size={24} />
+                  ) : (
+                    <Text className="text-lg text-[#773DD3] font-semibold">
+                      Carregar mais
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : null
+          }
         />
       ) : (
         <View className="justify-center items-center flex-1">
@@ -121,10 +295,10 @@ export default function StudentsScreen() {
         <TouchableOpacity
           activeOpacity={0.8}
           className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
-          onPress={toggleIsCreateStudentVisible}
+          onPress={toggleStudentModalVisibility}
           disabled={status === "loading"}
         >
-          {status === "loading" && isCreateStudentVisible ? (
+          {status === "loading" && studentModal.visible ? (
             <ActivityIndicator color="#FAF9F9" />
           ) : (
             <Text className="text-3xl text-[#FAF9F9] font-regular">
@@ -134,45 +308,28 @@ export default function StudentsScreen() {
         </TouchableOpacity>
       </View>
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isCreateStudentVisible}
-        onRequestClose={toggleIsCreateStudentVisible}
-      >
-        <TouchableOpacity
-          activeOpacity={1}
-          className="items-end justify-end bg-black/50 absolute inset-0"
-          onPress={toggleIsCreateStudentVisible}
-        >
-          <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-            <View className="bg-white rounded-t-3xl p-6 w-full shadow-lg">
-              <Text className="text-lg text-gray-700 mb-2">Nome do aluno</Text>
-              <TextInput
-                className="border border-gray-300 rounded-lg p-4 text-lg mb-6 focus:border-[#773DD3]"
-                placeholder="Digite o nome do aluno"
-                value={studentNameInput}
-                onChangeText={setStudentNameInput}
-                editable={status !== "loading"}
-              />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-6"
-                onPress={handleCreateStudent}
-                disabled={status === "loading"}
-              >
-                {status === "loading" ? (
-                  <ActivityIndicator color="#FAF9F9" />
-                ) : (
-                  <Text className="text-3xl text-[#FAF9F9] font-regular">
-                    Criar aluno
-                  </Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
-        </TouchableOpacity>
-      </Modal>
+      <GenericModal
+        visible={studentModal.visible}
+        onClose={toggleStudentModalVisibility}
+        onConfirm={
+          studentModal.action == "create"
+            ? handleCreateStudent
+            : handleEditStudent
+        }
+        loading={status === "loading"}
+        title="Nome dO(a) aluno(a)"
+        actionText={
+          studentModal.action == "create" ? "Criar aluno(a)" : "Editar aluno(a)"
+        }
+        initialValue={studentNameInput}
+      />
+
+      <ConfirmDeleteModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+        onConfirm={handleStudentDelete}
+        title="Deletar turma"
+      />
     </SafeAreaView>
-  )
+  );
 }

@@ -1,14 +1,13 @@
-import { useNavigation } from "@hooks/useNavigation";
 import { Swipeable } from "react-native-gesture-handler";
 import { ChevronRight, Pen, X } from "lucide-react-native";
 import { Text, TouchableOpacity, View, Animated } from "react-native";
-import React from "react";
 
-interface ClassItemProps {
+interface ListItemProps {
   id: string;
   name: string;
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;
+  onPress: () => void;
 }
 
 type ActionButtonProps = {
@@ -48,21 +47,22 @@ const AnimatedActionButton = ({
       className="w-[60px] items-center justify-center rounded-lg"
       style={{ backgroundColor: color }}
     >
-      <Animated.View style={{ opacity, transform: [{ scale }, { translateX }] }}>
+      <Animated.View
+        style={{ opacity, transform: [{ scale }, { translateX }] }}
+      >
         <Icon color="#fff" size={24} />
       </Animated.View>
     </TouchableOpacity>
   );
 };
 
-export default function ClassItem({
+export default function ListItem({
   id,
   name,
   onDelete,
   onEdit,
-}: ClassItemProps) {
-  const { navigate } = useNavigation();
-
+  onPress,
+}: ListItemProps) {
   const renderLeftActions = (
     progress: Animated.AnimatedInterpolation<number>,
     _drag: Animated.AnimatedInterpolation<number>
@@ -99,7 +99,7 @@ export default function ClassItem({
         overshootRight={false}
       >
         <TouchableOpacity
-          onPress={() => navigate("students", { classId: id, name })}
+          onPress={onPress}
           activeOpacity={0.8}
           className="flex-row items-center justify-between bg-[#F3F3F3] border border-[#2B2D2F]/20 px-4 py-4 rounded-lg"
         >

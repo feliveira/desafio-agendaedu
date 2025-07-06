@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { BASE_URL } from '@services/api';
 
-// --- Interfaces ---
 interface Student {
   id: string
   name: string
@@ -11,29 +10,35 @@ interface Student {
 interface StudentsState {
   students: Student[] 
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  page: number,
+  hasMore: boolean,
   error: string | null
 }
 
 const initialState: StudentsState = {
   students: [], 
   status: 'idle',
+  page: 1,
+  hasMore: true,
   error: null,
 }
 
 
-export const fetchStudents = createAsyncThunk('students/fetchStudents', async () => {
-  const response = await fetch(`${BASE_URL}/students`)
+export const fetchStudents = createAsyncThunk('students/fetchStudents', async ({ page, limit, classId }: {page: number, limit: number, classId: string}) => {
+  const response = await fetch(`${BASE_URL}/students?_page=${page}&_per_page=${limit}&classId=${classId}`)
   if (!response.ok) {
-    throw new Error('Failed to fetch students')
+    throw new Error(`Failed to fetch students: ${response.statusText}`)
   }
   const data = await response.json()
-  return data
+  const hasMore = page != data.last
+  return { students: data.data, hasMore }
 })
 
 interface CreateStudentArgs {
   name: string
   classId: string
 }
+
 
 export const createStudent = createAsyncThunk(
   'students/createStudent',
@@ -55,8 +60,37 @@ export const createStudent = createAsyncThunk(
       const newStudent = await response.json()
       return newStudent
     } catch (error: any) {
-      console.error('Error creating student:', error)
       return rejectWithValue(error.message || 'An unknown error occurred during student creation')
+    }
+  }
+)
+
+interface EditStudentArgs {
+  id: string
+  newName: string
+}
+
+export const editStudent = createAsyncThunk(
+  'students/editStudent',
+  async ({ id, newName }: EditStudentArgs, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/students/${id}`, {
+        method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to edit student')
+      }
+
+      const updatedClass = await response.json()
+      return updatedClass
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'An unknown error occurred during student edit')
     }
   }
 )
@@ -76,7 +110,6 @@ export const deleteStudent = createAsyncThunk(
 
       return id 
     } catch (error: any) {
-      console.error('Error deleting student:', error)
       return rejectWithValue(error.message || 'An unknown error occurred during student deletion')
     }
   }
@@ -90,13 +123,20 @@ const studentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Students
       .addCase(fetchStudents.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(fetchStudents.fulfilled, (state, action: PayloadAction<Student[]>) => {
+      .addCase(fetchStudents.fulfilled, (state, action) => {
+        const page = action.meta.arg.page
+
+        if (page === 1) {
+          state.students = action.payload.students
+        } else {
+          state.students = [...state.students, ...action.payload.students]
+        }
+
+        state.hasMore = action.payload.hasMore
         state.status = 'succeeded'
-        state.students = action.payload
       })
       .addCase(fetchStudents.rejected, (state, action) => {
         state.status = 'failed'
@@ -110,6 +150,20 @@ const studentsSlice = createSlice({
         state.students.push(action.payload) 
       })
       .addCase(createStudent.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.payload as string
+      })
+      .addCase(editStudent.pending, (state) => {
+        state.status = 'loading' 
+      })
+      .addCase(editStudent.fulfilled, (state, action: PayloadAction<Student>) => {
+        state.status = 'succeeded'
+        const index = state.students.findIndex(student => student.id === action.payload.id)
+        if (index !== -1) {
+          state.students[index] = action.payload 
+        }
+      })
+      .addCase(editStudent.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.payload as string
       })

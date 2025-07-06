@@ -1,3 +1,4 @@
+import Button from "@components/ui/Button";
 import { useNavigation } from "@hooks/useNavigation";
 import {
   SafeAreaView,
@@ -49,21 +50,17 @@ export default function HomeScreen() {
         </Text>
 
         <View className="gap-y-6 w-full items-center">
-          <TouchableOpacity
+          <Button
+            title="Turmas"
+            variant="primary"
             onPress={() => navigation.navigate("classes")}
-            activeOpacity={0.8}
-            className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
-          >
-            <Text className="text-3xl text-[#FAF9F9] font-regular">Turmas</Text>
-          </TouchableOpacity>
+          />
 
-          <TouchableOpacity
+          <Button
+            title="Favoritos"
+            variant="secondary"
             onPress={() => navigation.navigate("favorites")}
-            activeOpacity={0.8}
-            className="bg-[#E8DDFF] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
-          >
-            <Text className="text-3xl text-[#773DD3] font-regular">Favoritos</Text>
-          </TouchableOpacity>
+          />
         </View>
       </ScrollView>
 

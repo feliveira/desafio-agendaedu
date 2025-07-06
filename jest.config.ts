@@ -103,6 +103,7 @@ const config: Config = {
     "^@redux/(.*)$": "<rootDir>/src/redux/$1",
     "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
     "^@styles/(.*)$": "<rootDir>/src/styles/$1",
+    "^@services/(.*)$": "<rootDir>/src/services/$1",
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -143,8 +144,8 @@ const config: Config = {
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native|@react-navigation|@expo|expo(nent)?|expo-router|nativewind|react-native-css-interop)/)"
-  ],
+    "node_modules/(?!((jest-)?react-native|@react-native|@react-navigation|@expo|expo(nent)?|expo-router|nativewind|react-native-css-interop|react-redux|react-native-toast-message|@react-native-async-storage/async-storage)/)"
+  ]
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
