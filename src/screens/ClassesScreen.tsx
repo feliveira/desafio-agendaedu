@@ -20,7 +20,7 @@ import {
 } from "@redux/classesSlice";
 
 import ClassItem from "@components/ListItem";
-import GenericModal from "@components/GenericModal";
+import ClassStudentModal from "@components/ClassStudentModal";
 
 import Toast from "react-native-toast-message";
 
@@ -299,14 +299,14 @@ export default function ClassesScreen() {
           {status === "loading" && classModal.visible ? (
             <ActivityIndicator color="#FAF9F9" />
           ) : (
-            <Text className="text-3xl text-[#FAF9F9] font-regular">
+            <Text className="text-2xl text-[#FAF9F9] font-regular">
               Criar turma
             </Text>
           )}
         </TouchableOpacity>
       </View>
 
-      <GenericModal
+      <ClassStudentModal
         visible={classModal.visible}
         onClose={toggleClassModalVisibility}
         onConfirm={

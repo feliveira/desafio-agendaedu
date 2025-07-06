@@ -49,6 +49,19 @@
       "name": "teste12"
     }
   ],
-  "students": [],
-  "observations": []
+  "students": [
+    {
+      "id": "eb69",
+      "name": "felipe teste1",
+      "classId": "0dab"
+    }
+  ],
+  "observations": [
+    {
+      "text": "teste observaçao",
+      "favorite": true,
+      "done": false,
+      "id": "2e56"
+    }
+  ]
 }

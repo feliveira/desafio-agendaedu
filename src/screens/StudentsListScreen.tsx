@@ -19,62 +19,62 @@ import {
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RoutesParamList } from "../types/navigation";
 import Toast from "react-native-toast-message";
-import GenericModal from "@components/GenericModal";
+import GenericModal from "@components/ClassStudentModal";
 import ConfirmDeleteModal from "@components/ConfirmDeleteModal";
 import ListItem from "@components/ListItem";
 import { useNavigation } from "@hooks/useNavigation";
 
-type StudentsScreenRouteProp = RouteProp<RoutesParamList, "students">;
+type StudentsScreenRouteProp = RouteProp<RoutesParamList, "students">
 
-const STUDENTS_PER_PAGE_LIMIT = 5;
+const STUDENTS_PER_PAGE_LIMIT = 5
 
-type ModalAction = "create" | "edit";
+type ModalAction = "create" | "edit"
 
 type StudentModalState = {
-  visible: boolean;
-  action: ModalAction;
-};
+  visible: boolean
+  action: ModalAction
+}
 
-export default function StudentsScreen() {
-  const route = useRoute<StudentsScreenRouteProp>();
-  const { classId, name: className } = route.params;
+export default function StudentsListScreen() {
+  const route = useRoute<StudentsScreenRouteProp>()
+  const { classId, name: className } = route.params
 
-  const { navigate } = useNavigation();
+  const { navigate } = useNavigation()
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch()
   const { students, status, error } = useSelector(
     (state: RootState) => state.students
-  );
+  )
 
   const [studentModal, setStudentModal] = useState<StudentModalState>({
     visible: false,
     action: "create",
-  });
+  })
 
-  const [studentNameInput, setStudentNameInput] = useState("");
+  const [studentNameInput, setStudentNameInput] = useState("")
 
-  const [page, setPage] = useState(1);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1)
+  const [isFetchingMore, setIsFetchingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
 
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
     null
-  );
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  )
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
   useEffect(() => {
     const fetchInitial = async () => {
       const result = await dispatch(
         fetchStudents({ page: 1, limit: STUDENTS_PER_PAGE_LIMIT, classId })
-      );
+      )
       if (fetchStudents.fulfilled.match(result)) {
-        setHasMore(result.payload.hasMore);
-        setPage(1);
+        setHasMore(result.payload.hasMore)
+        setPage(1)
       }
-    };
+    }
 
-    fetchInitial();
-  }, []);
+    fetchInitial()
+  }, [])
 
   useEffect(() => {
     if (status === "failed" && error) {
@@ -83,35 +83,35 @@ export default function StudentsScreen() {
         text1: "❌ Erro",
         text2: "Ocorreu um erro, por favor, tente novamente mais tarde.",
         visibilityTime: 1000,
-      });
+      })
     }
-  }, [status, error]);
+  }, [status, error])
 
   const loadMoreStudents = async () => {
-    if (isFetchingMore || !hasMore) return;
+    if (isFetchingMore || !hasMore) return
 
-    setIsFetchingMore(true);
-    const nextPage = page + 1;
+    setIsFetchingMore(true)
+    const nextPage = page + 1
 
     const result = await dispatch(
       fetchStudents({ page: nextPage, limit: STUDENTS_PER_PAGE_LIMIT, classId })
-    );
+    )
     if (fetchStudents.fulfilled.match(result)) {
-      setPage(nextPage);
-      const { hasMore } = result.payload;
-      setHasMore(hasMore);
+      setPage(nextPage)
+      const { hasMore } = result.payload
+      setHasMore(hasMore)
     }
 
-    setIsFetchingMore(false);
-  };
+    setIsFetchingMore(false)
+  }
 
   const toggleStudentModalVisibility = () => {
     setStudentModal((state) => ({
       ...state,
       action: "create",
       visible: !state.visible,
-    }));
-  };
+    }))
+  }
 
   const handleCreateStudent = async (studentName: string) => {
     if (studentName.trim() === "") {
@@ -120,23 +120,23 @@ export default function StudentsScreen() {
         text1: "❌ Erro",
         text2: "O nome do(a) aluno(a) não pode estar vazio.",
         visibilityTime: 1000,
-      });
-      return;
+      })
+      return
     }
 
     const resultAction = await dispatch(
       createStudent({ classId: classId, name: studentName })
-    );
+    )
 
     if (createStudent.fulfilled.match(resultAction)) {
-      setStudentNameInput("");
-      toggleStudentModalVisibility();
+      setStudentNameInput("")
+      toggleStudentModalVisibility()
       Toast.show({
         type: "customSuccess",
         text1: "✅ Sucesso",
         text2: "A turma foi criada com sucesso!",
         visibilityTime: 400,
-      });
+      })
     } else if (createStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -144,9 +144,9 @@ export default function StudentsScreen() {
         text2:
           "Ocorreu um erro ao criar o(a) aluno(a). Por favor, tente novamente mais tarde.",
         visibilityTime: 1000,
-      });
+      })
     }
-  };
+  }
 
   const handleEditStudent = async (studentName: string) => {
     if (studentName.trim() === "") {
@@ -155,23 +155,23 @@ export default function StudentsScreen() {
         text1: "❌ Erro",
         text2: "O nome do(a) aluno(a) não pode estar vazio.",
         visibilityTime: 1000,
-      });
-      return;
+      })
+      return
     }
 
     const resultAction = await dispatch(
       editStudent({ id: classId, newName: studentName })
-    );
+    )
 
     if (editStudent.fulfilled.match(resultAction)) {
-      setStudentNameInput("");
-      toggleStudentModalVisibility();
+      setStudentNameInput("")
+      toggleStudentModalVisibility()
       Toast.show({
         type: "customSuccess",
         text1: "✅ Sucesso",
         text2: "O(A) aluno(a) foi editado(a) com sucesso!",
         visibilityTime: 400,
-      });
+      })
     } else if (editStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -179,24 +179,24 @@ export default function StudentsScreen() {
         text2:
           "Ocorreu um erro ao editar o(a) aluno(a). Por favor, tente novamente mais tarde.",
         visibilityTime: 1000,
-      });
+      })
     }
-  };
+  }
 
   const handleStudentDelete = async () => {
-    const resultAction = await dispatch(deleteStudent(selectedStudentId!));
+    const resultAction = await dispatch(deleteStudent(selectedStudentId!))
 
     if (deleteStudent.fulfilled.match(resultAction)) {
-      setStudentNameInput("");
-      setSelectedStudentId(null);
-      setIsDeleteModalVisible(false);
+      setStudentNameInput("")
+      setSelectedStudentId(null)
+      setIsDeleteModalVisible(false)
 
       Toast.show({
         type: "customSuccess",
         text1: "✅ Sucesso",
         text2: "O(a) aluno(a) foi deletado(a) com sucesso!",
         visibilityTime: 400,
-      });
+      })
     } else if (deleteStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -204,22 +204,22 @@ export default function StudentsScreen() {
         text2:
           "Ocorreu um erro ao deletar o(a) aluno(a). Por favor, tente novamente mais tarde.",
         visibilityTime: 1000,
-      });
+      })
     }
-  };
+  }
 
   const openEditModal = (classId: string) => {
-    setSelectedStudentId(classId);
+    setSelectedStudentId(classId)
     setStudentNameInput(
       students.find((student) => student.id === selectedStudentId)!.name
-    );
-    setStudentModal((state) => ({ ...state, visible: true, action: "edit" }));
-  };
+    )
+    setStudentModal((state) => ({ ...state, visible: true, action: "edit" }))
+  }
 
   const openDeleteModal = (classId: string) => {
-    setSelectedStudentId(classId);
-    setIsDeleteModalVisible(true);
-  };
+    setSelectedStudentId(classId)
+    setIsDeleteModalVisible(true)
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -294,14 +294,14 @@ export default function StudentsScreen() {
       <View className="mt-auto p-4 items-center">
         <TouchableOpacity
           activeOpacity={0.8}
-          className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-6 max-w-[299px]"
+          className="bg-[#773DD3] rounded-lg w-full items-center justify-center py-4 max-w-[299px]"
           onPress={toggleStudentModalVisibility}
           disabled={status === "loading"}
         >
           {status === "loading" && studentModal.visible ? (
             <ActivityIndicator color="#FAF9F9" />
           ) : (
-            <Text className="text-3xl text-[#FAF9F9] font-regular">
+            <Text className="text-2xl text-[#FAF9F9] font-regular">
               Criar aluno
             </Text>
           )}
@@ -317,7 +317,7 @@ export default function StudentsScreen() {
             : handleEditStudent
         }
         loading={status === "loading"}
-        title="Nome dO(a) aluno(a)"
+        title="Nome do(a) aluno(a)"
         actionText={
           studentModal.action == "create" ? "Criar aluno(a)" : "Editar aluno(a)"
         }
@@ -331,5 +331,5 @@ export default function StudentsScreen() {
         title="Deletar turma"
       />
     </SafeAreaView>
-  );
+  )
 }

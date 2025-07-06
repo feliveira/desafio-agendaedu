@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-interface GenericModalProps {
+interface ClassStudentModalProps {
   visible: boolean
   onClose: () => void
   onConfirm: (value: string) => void
@@ -19,7 +19,7 @@ interface GenericModalProps {
   initialValue?: string
 }
 
-export default function GenericModal({
+export default function ClassStudentModal({
   visible,
   onClose,
   onConfirm,
@@ -27,7 +27,7 @@ export default function GenericModal({
   title,
   actionText,
   initialValue = "",
-}: GenericModalProps) {
+}: ClassStudentModalProps) {
   const [inputValue, setInputValue] = useState(initialValue)
 
   useEffect(() => {
@@ -46,9 +46,9 @@ export default function GenericModal({
         <View className="flex-1 bg-black/50 justify-end z-[1000]">
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
             <View className="bg-white rounded-t-3xl p-6 w-full shadow-lg">
-              <Text className="text-xl font-bold text-gray-700 mb-2">{title}</Text>
+              <Text className="text-xl font-bold text-[#31223E] mb-2">{title}</Text>
               <TextInput
-                className="border border-gray-300 rounded-lg p-4 text-lg mb-6 font-regular"
+                className="border border-[#773DD3] rounded-lg p-4 text-lg mb-6 font-regular"
                 placeholder={`Digite ${title.toLowerCase()}`}
                 value={inputValue}
                 onChangeText={setInputValue}

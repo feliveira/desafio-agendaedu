@@ -7,6 +7,7 @@ interface Observation {
   classId: string
   className: string
   studentId: string
+  studentName: string
   favorite: boolean
   done: boolean
   createdAt: string
@@ -71,6 +72,7 @@ interface CreateObservationArgs {
   classId: string
   className: string
   studentId: string
+  studentName: string
   favorite: boolean
   done: boolean
   createdAt: string
@@ -84,6 +86,7 @@ export const createObservation = createAsyncThunk(
       classId,
       className,
       studentId,
+      studentName,
       favorite,
       done,
       createdAt,
@@ -101,6 +104,7 @@ export const createObservation = createAsyncThunk(
           classId,
           className,
           studentId,
+          studentName,
           favorite,
           done,
           createdAt,
