@@ -43,7 +43,9 @@ export default function HomeScreen() {
         </View>
 
         <Text className="font-regular text-center text-2xl text-[#2B2D2F] px-4">
-          Gerencie suas observações sobre os alunos de forma simples e eficiente
+          Gerencie suas observações{"\n"} 
+          sobre os alunos de forma{"\n"} 
+          simples e eficiente
         </Text>
 
         <View className="gap-y-6 w-full items-center">

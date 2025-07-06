@@ -9,8 +9,13 @@ import { store } from "@redux/store";
 import { Provider } from "react-redux";
 
 import { Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold, useFonts } from "@expo-google-fonts/poppins";
+
 import * as SplashScreen from "expo-splash-screen";
 import * as Sentry from '@sentry/react-native';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import Toast from 'react-native-toast-message';
+import { toastConfig } from "./src/lib/toast";
 
 const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
@@ -45,9 +50,12 @@ export default Sentry.wrap(function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+        <Toast config={toastConfig} />
+      </GestureHandlerRootView>
     </Provider>
   );
 });

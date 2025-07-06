@@ -9,22 +9,30 @@ interface Class {
 interface ClassesState {
   classes: Class[]
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  page: number,
+  hasMore: boolean,
   error: string | null
 }
 
 const initialState: ClassesState = {
   classes: [],
   status: 'idle',
+  page: 1,
+  hasMore: true,
   error: null,
 }
 
-export const fetchClasses = createAsyncThunk('classes/fetchClasses', async () => {
-  const response = await fetch(`${BASE_URL}/classes`)
+export const fetchClasses = createAsyncThunk('classes/fetchClasses', async ({ page, limit }: {page: number, limit: number}) => {
+  const response = await fetch(`${BASE_URL}/classes?_page=${page}&_limit=${limit}`)
   if (!response.ok) {
     throw new Error('Failed to fetch classes')
   }
   const data = await response.json()
-  return data
+console.log(`Page ${page}`,data)
+  const hasMore = data.length === limit
+
+  return { classes: data, hasMore };
+
 })
 
 export const createClass = createAsyncThunk(
@@ -118,9 +126,17 @@ const classesSlice = createSlice({
       .addCase(fetchClasses.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(fetchClasses.fulfilled, (state, action: PayloadAction<Class[]>) => {
-        state.status = 'succeeded'
-        state.classes = action.payload
+      .addCase(fetchClasses.fulfilled, (state, action) => {
+        const page = action.meta.arg.page;
+
+        if (page === 1) {
+          state.classes = action.payload.classes;
+        } else {
+          state.classes = [...state.classes, ...action.payload.classes];
+        }
+
+        state.hasMore = action.payload.hasMore;
+        state.status = 'succeeded';
       })
       .addCase(fetchClasses.rejected, (state, action) => {
         state.status = 'failed'

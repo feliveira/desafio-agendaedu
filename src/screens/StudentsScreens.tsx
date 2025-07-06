@@ -21,7 +21,6 @@ import {
 import StudentItem from "@components/StudentItem";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RoutesParamList } from "../types/navigation";
-import { Pen, X } from "lucide-react-native";
 
 type StudentsScreenRouteProp = RouteProp<RoutesParamList, "students">
 
@@ -85,21 +84,11 @@ export default function StudentsScreen() {
         barStyle="dark-content"
       />
       <View
-        className="w-full bg-[#E8DDFF] flex-row items-center justify-between py-3.5 px-4"
+        className="w-full bg-[#E8DDFF] py-3.5 px-4"
       >
-        <TouchableOpacity
-        activeOpacity={0.8}
-        >
-          <Pen width={20} color={"#2B2D2F"} />
-        </TouchableOpacity>
-        <Text className="font-semibold text-[#773DD3] text-2xl">
+        <Text className="font-semibold text-[#773DD3] text-2xl text-center">
           turma: {className}
         </Text>
-        <TouchableOpacity
-        activeOpacity={0.8}
-        >
-          <X width={20} color={"#2B2D2F"} />
-        </TouchableOpacity>
       </View>
 
       {status === "loading" ? (
@@ -146,7 +135,7 @@ export default function StudentsScreen() {
       </View>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isCreateStudentVisible}
         onRequestClose={toggleIsCreateStudentVisible}

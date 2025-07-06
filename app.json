@@ -20,7 +20,8 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.desafioagendaedu"
     },
     "web": {
       "favicon": "./src/assets/favicon.png",
