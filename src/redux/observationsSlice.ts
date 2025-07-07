@@ -40,7 +40,7 @@ export const fetchObservations = createAsyncThunk(
     page: number;
     limit: number;
     studentId?: string;
-    favorite?: string;
+    favorite?: boolean;
   }) => {
     const url = new URL(`${BASE_URL}/observations`);
     url.searchParams.append("_page", String(page));
@@ -49,8 +49,9 @@ export const fetchObservations = createAsyncThunk(
     if (studentId) {
       url.searchParams.append("studentId", studentId);
     }
+    
     if (favorite) {
-      url.searchParams.append("favorite", favorite);
+      url.searchParams.append("favorite", "true");
     }
 
     url.searchParams.append("_sort", "createdAt");
