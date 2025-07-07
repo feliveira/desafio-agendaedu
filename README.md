@@ -22,12 +22,12 @@ O objetivo principal foi construir um aplicativo de TODO supondo um contexto esc
 
 As funcionalidades podem ser visualizadas em formato de GIF [neste link](https://imgur.com/a/funcionalidades-app-para-auxiliar-professores-no-gerenciamento-de-observa-es-sobre-seus-alunos-RVGGHvs)
 
-- Criação, edição e exclusão de turmas
-- Criação, edição e exclusão de alunos
-- Paginação de listas
-- Criação, edição e exclusão de observações
-- Marcar observações como favoritas
-- Acesso rápido a turmas e alunos via favoritos
+- **Criação, edição e exclusão de turmas**
+- **Criação, edição e exclusão de alunos**
+- **Paginação de listas**
+- **Criação, edição e exclusão de observações**
+- **Marcar observações como favoritas**
+- **Acesso rápido a turmas e alunos via favoritos**
 
 ## Como Executar o Projeto
 
@@ -54,12 +54,12 @@ Siga os passos abaixo para configurar e rodar o projeto localmente:
 
 5.   **Inicie o JSON Server:**
     ```bash
-    npm run db
+        npm run db
     ```
 
 6.  **Inicie o servidor de desenvolvimento:**
     ```bash
-    npm run start
+        npm run start
     ```
 
 ## Notas Pessoais e Agradecimento
