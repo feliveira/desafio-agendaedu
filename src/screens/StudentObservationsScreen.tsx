@@ -70,8 +70,7 @@ export default function StudentObservationsScreen() {
 
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
-  useEffect(() => {
-    const fetchInitial = async () => {
+  const fetchInitial = async () => {
       const result = await dispatch(
         fetchObservations({
           page: 1,
@@ -85,6 +84,7 @@ export default function StudentObservationsScreen() {
       }
     }
 
+  useEffect(() => {
     fetchInitial()
   }, [])
 
@@ -169,6 +169,7 @@ export default function StudentObservationsScreen() {
         text2: "A observação foi criada com sucesso!",
         visibilityTime: 400,
       })
+      await fetchInitial()
     } else if (createObservation.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -213,6 +214,7 @@ export default function StudentObservationsScreen() {
         createdAt: observation!.createdAt
       })
     )
+    await fetchInitial()
     if (editObservation.fulfilled.match(resultAction)) {
       toggleObservationModalVisibility()
       Toast.show({
@@ -239,12 +241,14 @@ export default function StudentObservationsScreen() {
     if (deleteObservation.fulfilled.match(resultAction)) {
       setSelectedObservation(null)
       setIsDeleteModalVisible(false)
+      toggleObservationModalVisibility()
       Toast.show({
         type: "customSuccess",
         text1: "✅ Sucesso",
         text2: "A observação foi deletada com sucesso!",
         visibilityTime: 400,
       })
+      await fetchInitial()
     } else if (deleteObservation.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",

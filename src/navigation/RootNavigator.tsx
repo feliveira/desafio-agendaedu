@@ -3,6 +3,7 @@ import HomeScreen from "@screens/HomeScreen";
 import ClassesScreen from "@screens/ClassesScreen";
 import StudentsListScreen from "@screens/StudentsListScreen";
 import StudentObservationsScreen from "@screens/StudentObservationsScreen";
+import FavoritesScreen from "@screens/FavoritesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,11 @@ export default function RootNavigator() {
         name="student"
         component={StudentObservationsScreen}
         options={{ title: "Aluno", ...headerStyles }}
+      />
+      <Stack.Screen
+        name="favorites"
+        component={FavoritesScreen}
+        options={{ title: "Favoritos", ...headerStyles }}
       />
     </Stack.Navigator>
   )

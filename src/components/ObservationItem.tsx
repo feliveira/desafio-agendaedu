@@ -11,7 +11,7 @@ interface ObservationItemProps {
   done: boolean
   onPressStudent: (() => void) | null
   onPressClass: (() => void) | null
-  onPressEdit: (id: string) => void | null
+  onPressEdit: ((id: string) => void) | null
 }
 
 export default function ObservationItem({
@@ -53,6 +53,7 @@ export default function ObservationItem({
 
           <Star
             size={20}
+            testID="star-icon"
             color={favorite ? "#FFC700" : "#A0A0A0"}
             fill={favorite ? "#FFC700" : "transparent"}
           />
@@ -78,8 +79,9 @@ export default function ObservationItem({
           onPressEdit != null &&
           <TouchableOpacity
           onPress={() => onPressEdit(id)}
+          testID="edit-button"
           activeOpacity={0.8}
-          className="bg-[#773DD3] w-8 h-8 rounded shadow-lg items-center justify-center"
+          className="bg-[#773DD3] w-8 h-8 rounded shadow-lg items-center self-end justify-center"
         >
           <Pen size={10} color="#FFFFFF" />
         </TouchableOpacity>
