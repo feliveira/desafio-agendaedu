@@ -70,7 +70,7 @@ export default function ListItem({
     <AnimatedActionButton
       progress={progress}
       icon={X}
-      color="#e11d48"
+      color="#9a031e"
       onPress={() => onDelete(id)}
       direction="left"
     />
@@ -83,7 +83,7 @@ export default function ListItem({
     <AnimatedActionButton
       progress={progress}
       icon={Pen}
-      color="#2563eb"
+      color="#773DD3"
       onPress={() => onEdit(id)}
       direction="right"
     />

@@ -91,9 +91,27 @@ export const deleteClass = createAsyncThunk(
   'classes/deleteClass',
   async (id: string, { rejectWithValue }) => {
     try {
+      const observationsRes = await fetch(`${BASE_URL}/observations?classId=${id}`);
+      const observations = await observationsRes.json();
+
+      await Promise.all(
+        observations.map((obs: any) =>
+          fetch(`${BASE_URL}/observations/${obs.id}`, { method: 'DELETE' })
+        )
+      );
+
+      const studentsRes = await fetch(`${BASE_URL}/students?classId=${id}`);
+      const students = await studentsRes.json();
+
+      await Promise.all(
+        students.map((student: any) =>
+          fetch(`${BASE_URL}/students/${student.id}`, { method: 'DELETE' })
+        )
+      );
+
       const response = await fetch(`${BASE_URL}/classes/${id}`, {
         method: 'DELETE',
-      })
+      });
 
       if (!response.ok) {
         

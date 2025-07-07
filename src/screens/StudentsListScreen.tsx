@@ -61,18 +61,18 @@ export default function StudentsListScreen() {
     null
   )
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+  
+  const fetchInitial = async () => {
+    const result = await dispatch(
+      fetchStudents({ page: 1, limit: STUDENTS_PER_PAGE_LIMIT, classId })
+    )
+    if (fetchStudents.fulfilled.match(result)) {
+      setHasMore(result.payload.hasMore)
+      setPage(1)
+    }
+  }
 
   useEffect(() => {
-    const fetchInitial = async () => {
-      const result = await dispatch(
-        fetchStudents({ page: 1, limit: STUDENTS_PER_PAGE_LIMIT, classId })
-      )
-      if (fetchStudents.fulfilled.match(result)) {
-        setHasMore(result.payload.hasMore)
-        setPage(1)
-      }
-    }
-
     fetchInitial()
   }, [])
 
@@ -106,6 +106,8 @@ export default function StudentsListScreen() {
   }
 
   const toggleStudentModalVisibility = () => {
+    setStudentNameInput("")
+    setSelectedStudentId(null)
     setStudentModal((state) => ({
       ...state,
       action: "create",
@@ -134,9 +136,10 @@ export default function StudentsListScreen() {
       Toast.show({
         type: "customSuccess",
         text1: "✅ Sucesso",
-        text2: "A turma foi criada com sucesso!",
+        text2: "O(a) aluno(a) foi criado(a) com sucesso!",
         visibilityTime: 400,
       })
+      await fetchInitial()
     } else if (createStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -160,7 +163,7 @@ export default function StudentsListScreen() {
     }
 
     const resultAction = await dispatch(
-      editStudent({ id: classId, newName: studentName })
+      editStudent({ id: selectedStudentId!, newName: studentName })
     )
 
     if (editStudent.fulfilled.match(resultAction)) {
@@ -172,6 +175,7 @@ export default function StudentsListScreen() {
         text2: "O(A) aluno(a) foi editado(a) com sucesso!",
         visibilityTime: 400,
       })
+      await fetchInitial()
     } else if (editStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -197,6 +201,7 @@ export default function StudentsListScreen() {
         text2: "O(a) aluno(a) foi deletado(a) com sucesso!",
         visibilityTime: 400,
       })
+      await fetchInitial()
     } else if (deleteStudent.rejected.match(resultAction)) {
       Toast.show({
         type: "customError",
@@ -208,10 +213,10 @@ export default function StudentsListScreen() {
     }
   }
 
-  const openEditModal = (classId: string) => {
-    setSelectedStudentId(classId)
+  const openEditModal = (studentId: string) => {
+    setSelectedStudentId(studentId)
     setStudentNameInput(
-      students.find((student) => student.id === selectedStudentId)!.name
+      students.find((student) => student.id === studentId)!.name
     )
     setStudentModal((state) => ({ ...state, visible: true, action: "edit" }))
   }
@@ -328,7 +333,7 @@ export default function StudentsListScreen() {
         visible={isDeleteModalVisible}
         onClose={() => setIsDeleteModalVisible(false)}
         onConfirm={handleStudentDelete}
-        title="Deletar turma"
+        title="Deletar aluno(a)"
       />
     </SafeAreaView>
   )

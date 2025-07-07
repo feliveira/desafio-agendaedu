@@ -75,30 +75,56 @@ export const editStudent = createAsyncThunk(
   async ({ id, newName }: EditStudentArgs, { rejectWithValue }) => {
     try {
       const response = await fetch(`${BASE_URL}/students/${id}`, {
-        method: 'PUT', 
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: newName }),
-      })
+      });
 
+      // If the response is not OK, handle potential non-JSON errors
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to edit student')
+        // Get the error message as plain text first
+        const errorText = await response.text(); 
+        try {
+          // Try to parse it as JSON
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.message || 'Failed to edit student');
+        } catch (e) {
+          // If parsing fails, the error was plain text
+          throw new Error(errorText || 'Failed to edit student');
+        }
       }
 
-      const updatedClass = await response.json()
-      return updatedClass
+      // Check if the successful response has content before parsing
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.indexOf('application/json') !== -1) {
+        const updatedClass = await response.json();
+        return updatedClass;
+      } else {
+        // Handle cases where the server returns no content on success (e.g., 204 No Content)
+        return {}; // Or whatever is appropriate for your state
+      }
+
     } catch (error: any) {
-      return rejectWithValue(error.message || 'An unknown error occurred during student edit')
+      return rejectWithValue(error.message || 'An unknown error occurred during student edit');
     }
   }
-)
+);
 
 export const deleteStudent = createAsyncThunk(
   'students/deleteStudent',
   async (id: string, { rejectWithValue }) => {
     try {
+      const observationsRes = await fetch(`${BASE_URL}/observations?studentId=${id}`);
+      const observations = await observationsRes.json();
+
+      await Promise.all(
+        observations.map((obs: any) =>
+          fetch(`${BASE_URL}/observations/${obs.id}`, { method: 'DELETE' })
+        )
+      );
+
       const response = await fetch(`${BASE_URL}/students/${id}`, {
         method: 'DELETE',
       })
